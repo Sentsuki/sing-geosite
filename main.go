@@ -405,18 +405,13 @@ func release(source string, destination string, output string, cnOutput string, 
 	destinationRelease, err := fetch(destination)
 	if err != nil {
 		log.Warn("missing destination latest release")
-	} else {
-		if os.Getenv("NO_SKIP") != "true" && strings.Contains(*destinationRelease.Name, *sourceRelease.Name) {
-			log.Info("already latest")
-			setActionOutput("skip", "true")
-			return nil
-		}
 	}
 	err = generate(sourceRelease, output, cnOutput, ruleSetOutput, ruleSetOutputUnstable)
 	if err != nil {
 		return err
 	}
 	setActionOutput("tag", *sourceRelease.Name)
+	setActionOutput("skip", "false")
 	return nil
 }
 

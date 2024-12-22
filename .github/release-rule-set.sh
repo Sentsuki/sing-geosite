@@ -4,10 +4,6 @@ set -e -o pipefail
 
 function releaseRuleSet() {
     dirName=$1
-    if [ ! -d "$dirName" ]; then
-    echo "Error: Directory $dirName does not exist!"
-    exit 1
-fi
     pushd $dirName
     git init
     git config --local user.email "github-action@users.noreply.github.com"

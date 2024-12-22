@@ -397,28 +397,23 @@ func setActionOutput(name string, content string) {
 	os.Stdout.WriteString("::set-output name=" + name + "::" + content + "\n")
 }
 
-func release(source string, destination string, output string, cnOutput string, ruleSetOutput string, ruleSetOutputUnstable string) error {
+func release(source string, output string, cnOutput string, ruleSetOutput string, ruleSetOutputUnstable string) error {
 	sourceRelease, err := fetch(source)
 	if err != nil {
 		return err
 	}
-	destinationRelease, err := fetch(destination)
-	if err != nil {
-		log.Warn("missing destination latest release")
-	}
+
 	err = generate(sourceRelease, output, cnOutput, ruleSetOutput, ruleSetOutputUnstable)
 	if err != nil {
 		return err
 	}
 	setActionOutput("tag", *sourceRelease.Name)
-	setActionOutput("skip", "false")
 	return nil
 }
 
 func main() {
 	err := release(
 		"v2fly/domain-list-community",
-		"sagernet/sing-geosite",
 		"geosite.db",
 		"geosite-cn.db",
 		"rule-set",

@@ -394,6 +394,15 @@ func generate(release *github.RepositoryRelease, output string, cnOutput string,
 }
 
 func setActionOutput(name string, content string) {
+	githubOutput := os.Getenv("GITHUB_OUTPUT")
+	if githubOutput != "" {
+		f, err := os.OpenFile(githubOutput, os.O_APPEND|os.O_WRONLY, 0o644)
+		if err == nil {
+			defer f.Close()
+			f.WriteString(name + "=" + content + "\n")
+			return
+		}
+	}
 	os.Stdout.WriteString("::set-output name=" + name + "::" + content + "\n")
 }
 

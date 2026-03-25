@@ -35,15 +35,15 @@ jobs:
         run: .github/release-branch.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: dev-drprasad/delete-older-releases@v0.3.2
+      - name: Delete older releases
         if: steps.build.outputs.skip != 'true'
-        with:
-          keep_latest: 10
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release list --limit 100 --json tagName --jq '.[10:][].tagName' | xargs -I {} gh release delete {} --yes --cleanup-tag
       - name: Release geosite
         if: steps.build.outputs.skip != 'true'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.build.outputs.tag }}
           files: |
